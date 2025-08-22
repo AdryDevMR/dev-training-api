@@ -19,7 +19,6 @@ services:
       - DESCRIPTION=API for managing user accounts and tasks
     volumes:
       - ./logs:/app/logs
-      - ./app.db:/app/app.db
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]

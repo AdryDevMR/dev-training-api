@@ -1,0 +1,7 @@
+-r base.txt
+gunicorn==21.2.0
+uvloop==0.18.0
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+psycopg2-binary==2.9.9  # For PostgreSQL support
+python-dotenv==1.0.0

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import Dict, Any
 from app.database import get_db
 from app.services.user_service import UserService
-from app.schemas.user import UserCreate, UserUpdate, UserResponse
+from app.schemas.user import UserCreate, UserUpdate, UserResponse, UserResponseSerialized
 from app.schemas.common import UserActionRequest
 from app.utils.responses import APIResponse
 from app.utils.logging import get_logger
@@ -54,23 +54,20 @@ async def create_user(data: Dict[str, Any], db: Session) -> APIResponse:
             email=data["email"],
             full_name=data["full_name"],
             password=data["password"],
-            is_active=data.get("is_active", True),
-            is_admin=data.get("is_admin", False)
+            is_active=data.get("is_active", True)
         )
         
         # Create user
         user = UserService.create_user(db, user_data)
         
-        # Return success response
+        # Return success response without datetime fields
         return APIResponse.success(
             data={
                 "id": user.id,
                 "username": user.username,
                 "email": user.email,
                 "full_name": user.full_name,
-                "is_active": user.is_active,
-                "is_admin": user.is_admin,
-                "created_at": user.created_at
+                "is_active": user.is_active
             },
             message="User created successfully"
         )
@@ -98,7 +95,7 @@ async def edit_user(data: Dict[str, Any], db: Session) -> APIResponse:
         
         # Prepare update data
         update_data = {}
-        allowed_fields = ["username", "email", "full_name", "is_active", "is_admin"]
+        allowed_fields = ["username", "email", "full_name", "is_active"]
         
         for field in allowed_fields:
             if field in data:
@@ -111,16 +108,14 @@ async def edit_user(data: Dict[str, Any], db: Session) -> APIResponse:
         user_update = UserUpdate(**update_data)
         updated_user = UserService.update_user(db, user_id, user_update)
         
-        # Return success response
+        # Return success response without datetime fields
         return APIResponse.success(
             data={
                 "id": updated_user.id,
                 "username": updated_user.username,
                 "email": updated_user.email,
                 "full_name": updated_user.full_name,
-                "is_active": updated_user.is_active,
-                "is_admin": updated_user.is_admin,
-                "updated_at": updated_user.updated_at
+                "is_active": updated_user.is_active
             },
             message="User updated successfully"
         )
@@ -150,10 +145,7 @@ async def view_user(data: Dict[str, Any], db: Session) -> APIResponse:
                     "username": user.username,
                     "email": user.email,
                     "full_name": user.full_name,
-                    "is_active": user.is_active,
-                    "is_admin": user.is_admin,
-                    "created_at": user.created_at,
-                    "updated_at": user.updated_at
+                    "is_active": user.is_active
                 },
                 message="User retrieved successfully"
             )
@@ -172,10 +164,7 @@ async def view_user(data: Dict[str, Any], db: Session) -> APIResponse:
                     "username": user.username,
                     "email": user.email,
                     "full_name": user.full_name,
-                    "is_active": user.is_active,
-                    "is_admin": user.is_admin,
-                    "created_at": user.created_at,
-                    "updated_at": user.updated_at
+                    "is_active": user.is_active
                 },
                 message="User retrieved successfully"
             )
@@ -200,9 +189,7 @@ async def view_user(data: Dict[str, Any], db: Session) -> APIResponse:
                     "username": user.username,
                     "email": user.email,
                     "full_name": user.full_name,
-                    "is_active": user.is_active,
-                    "is_admin": user.is_admin,
-                    "created_at": user.created_at
+                    "is_active": user.is_active
                 })
             
             return APIResponse.success(

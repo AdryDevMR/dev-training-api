@@ -50,8 +50,7 @@ class UserService:
                 email=user_data.email,
                 full_name=user_data.full_name,
                 hashed_password=hashed_password,
-                is_active=user_data.is_active,
-                is_admin=user_data.is_admin
+                is_active=user_data.is_active
             )
             
             db.add(db_user)
